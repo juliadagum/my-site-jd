@@ -1,0 +1,25 @@
+---
+title: "My website"
+author: "Julia Dagum"
+date: "March 9, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+# Attach packages
+library(blogdown)
+library(tidyverse)
+```
+
+Make a website: 
+```{r}
+new_site(dir = "website",
+         theme = "gcushen/hugo-academic", 
+         sample = TRUE, 
+         theme_example = TRUE, 
+         empty_dirs = TRUE,
+         to_yaml = TRUE)
+```
+
