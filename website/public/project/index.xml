@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects | Academic</title>
+    <title>Projects | Julia</title>
     <link>/project/</link>
       <atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     <description>Projects</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>Projects</title>
       <link>/project/</link>
     </image>
@@ -30,6 +30,72 @@
 &lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
 &lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
 &lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Principal Components Analysis of Vegetable Nutrients</title>
+      <link>/project/my_test_project/pca_veg_nutrients/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/project/my_test_project/pca_veg_nutrients/</guid>
+      <description>
+
+
+&lt;p&gt;This project uses data from the U.S. Department of Agriculture’s (USDA) &lt;a href=&#34;https://fdc.nal.usda.gov/index.html&#34;&gt;FoodData Central&lt;/a&gt; to conduct principal components analysis (PCA) on nutrients found in vegetables. This analysis explores the relationships between some of the major nutrients found in the USDA food group categorized as “Vegetables and Vegetable Products”. PCA displays multiple dimensions of data in a two-dimensional plane to display the relationships between different variables.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;featured.jpg&#34; /&gt; &lt;/br&gt; Image Credit: &lt;a href=&#34;https://www.goodhousekeeping.com/health/diet-nutrition/a48002/carrot-nutrition/&#34;&gt;Getty Images, goodhousekeeping.com&lt;/a&gt; &lt;/br&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_chunk$set(echo = TRUE)
+
+# Attach packages
+
+library(tidyverse)
+library(janitor)
+library(naniar)
+library(VIM)
+library(skimr)
+library(ggfortify)
+library(here)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Read in data
+
+food &amp;lt;- read_csv(&amp;quot;usda_nutrients.csv&amp;quot;) %&amp;gt;% 
+  clean_names()
+
+# Make a subset of the data and make sure there are no NA values
+
+food_sub &amp;lt;- food %&amp;gt;%
+  filter(food_group == &amp;quot;Vegetables and Vegetable Products&amp;quot;) %&amp;gt;% 
+  select(energy_kcal:fiber_g) %&amp;gt;% 
+  drop_na()
+
+# Run principal components analysis 
+
+veggie_pca &amp;lt;- prcomp(food_sub, scale = TRUE)
+
+# Make a biplot of the data and rename loadings
+
+loadings_names &amp;lt;- c(&amp;quot;Energy (kcal)&amp;quot;, &amp;quot;Protein (g)&amp;quot;, &amp;quot;Fat (g)&amp;quot;, &amp;quot;Carbohydrates (g)&amp;quot;, &amp;quot;Sugar (g)&amp;quot;, &amp;quot;Fiber (g)&amp;quot;)
+
+veggie_biplot &amp;lt;- autoplot(veggie_pca, 
+                      colour = NA, 
+                      loadings.label = TRUE,
+                      loadings.label.size = 3, 
+                      loadings.label.colour = &amp;quot;black&amp;quot;, 
+                      loadings.label.repel = TRUE, 
+                      loadings.label.label = loadings_names) +
+  theme_minimal() +
+  labs(title = &amp;quot;Principal Components Analysis of Vegetable Nutrients&amp;quot;)
+
+# Display the biplot
+
+veggie_biplot&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/project/my_test_project/pca_veg_nutrients_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt; &lt;/br&gt; &lt;/br&gt; &lt;em&gt;&lt;strong&gt;Figure 1.&lt;/strong&gt; Biplot showing relationships between major nutrients found in the “Vegetables and Vegetable Products” food group of the USDA nutritional information dataset. Vectors pointing the same direction have a strong direct relationship, while vectors at a right angle have a very weak relationship or none at all.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As shown in the biplot, the two principal components in this analysis account for about 72% of the variation in this data.&lt;/p&gt;
+&lt;p&gt;Some major takeaways can be observed from this biplot:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Protein and calories have a strong direct relationship, showing that vegetables with more calories in this dataset tend to have higher amounts of protein.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Carbohydrates and fiber have a somewhat positive relationship, showing that vegetables with more carbohydrates tend to have more fiber&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Sugar and fat have no relationship to each other, showing that there is no correlation between sugar content and fat content in the vegetables in this dataset&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Data source: U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, 2019. fdc.nal.usda.gov.&lt;/p&gt;
 </description>
     </item>
     
